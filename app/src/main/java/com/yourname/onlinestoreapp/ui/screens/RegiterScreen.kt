@@ -2,6 +2,7 @@ package com.yourname.onlinestoreapp.ui.screens
 
 //package com.yourname.onlinestore.ui.screens
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -17,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.yourname.onlinestoreapp.navigation.Routes
 import com.yourname.onlinestoreapp.viewmodel.AuthViewModel
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun RegisterScreen(navController: NavController, onRegisterSuccess: () -> Unit = { navController.navigate(Routes.HOME) }) {
     var email by remember { mutableStateOf("") }
@@ -32,20 +34,41 @@ fun RegisterScreen(navController: NavController, onRegisterSuccess: () -> Unit =
     ) {
         Text("Register", style = MaterialTheme.typography.headlineMedium)
 
-        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
-        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") })
+        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth())
+
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = {
+        Button(onClick = {if (email.isBlank() || password.length < 6) {
+            Toast.makeText(context, "Please enter a valid email and a password with at least 6 characters",
+                Toast.LENGTH_SHORT).show();return@Button
+        }
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) navController.navigate("home")
-                    else Toast.makeText(context, "Registration failed", Toast.LENGTH_SHORT).show()
+                .addOnCompleteListener { task -> if(task.isSuccessful) {
+                    Toast.makeText(context, "Registration Successful", Toast.LENGTH_SHORT).show()
+                onRegisterSuccess()
                 }
-        }) {
+                else {
+                val errorMessage =task.exception?.message ?: "Registration failed"
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+                }
+                }
+        }
+        )
+        {
             Text("Register")
         }
+
+//        Button(onClick = {
+//            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+//                .addOnCompleteListener {
+//                    if (it.isSuccessful) navController.navigate("home")
+//                    else Toast.makeText(context, "Registration failed", Toast.LENGTH_SHORT).show()
+//                }
+//        }) {
+//            Text("Register")
+//        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -53,7 +76,8 @@ fun RegisterScreen(navController: NavController, onRegisterSuccess: () -> Unit =
             navController.navigate("login") {
                 popUpTo("register") { inclusive = true }
             }
-        }) {
+        }
+        ) {
             Text("Already have an account? Login")
         }
     }

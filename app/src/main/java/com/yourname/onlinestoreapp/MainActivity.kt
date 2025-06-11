@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.yourname.onlinestoreapp.navigation.AppNavigation
 import com.yourname.onlinestoreapp.navigation.Routes
 import com.yourname.onlinestoreapp.ui.screens.HomeScreen
 import com.yourname.onlinestoreapp.ui.screens.LoginScreen
@@ -27,13 +28,15 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val user = FirebaseAuth.getInstance().currentUser
 
-                    if (user != null) {
-                        // ✅ Show the HomeScreen with Bottom Navigation
-                        HomeScreen()
-                    } else {
-                        // 🔐 Not logged in, show Login Screen
-                        LoginScreen(navController)
-                    }
+                    AppNavigation(navController)
+
+//                    if (user != null) {
+//                        // ✅ Show the HomeScreen with Bottom Navigation
+//                        HomeScreen()
+//                    } else {
+//                        // 🔐 Not logged in, show Login Screen
+//                        LoginScreen(navController)
+//                    }
                 }
             }
         }
