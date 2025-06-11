@@ -34,14 +34,13 @@ fun AppNavigation(navController: NavHostController) {
         }
 
         composable(Routes.LOGIN) {
-            LoginScreen(
-                onLoginSuccess = { navController.navigate(Routes.HOME) }
-            )
+            LoginScreen(navController, onLoginSuccess = { navController.navigate(Routes.HOME)})
+//                onLoginSuccess = { navController.navigate(Routes.HOME)
         }
         composable(Routes.REGISTER) {
-            RegisterScreen(
-                onRegisterSuccess = { navController.navigate(Routes.HOME) }
-            )
+            RegisterScreen(navController, onRegisterSuccess = { navController.navigate(Routes.HOME) })
+//                onRegisterSuccess = { navController.navigate(Routes.HOME) }
+
         }
         composable(Routes.HOME) {
             HomeScreen()

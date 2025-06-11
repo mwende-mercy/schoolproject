@@ -2,30 +2,26 @@ package com.yourname.onlinestoreapp.ui.screens
 
 //package com.yourname.onlinestore.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
+import com.yourname.onlinestoreapp.navigation.Routes
 import com.yourname.onlinestoreapp.viewmodel.AuthViewModel
 
 @Composable
-fun LoginScreen(
-    onLoginSuccess: () -> Unit,
-    authViewModel: AuthViewModel = viewModel()
-) {
-    val isSuccess by authViewModel.isLoginSuccessful.collectAsState()
-    val errorMessage by authViewModel.errorMessage.collectAsState()
-
+fun LoginScreen(navController: NavController, onLoginSuccess: () -> Unit = { navController.navigate(Routes.HOME)}) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
-    if (isSuccess) {
-        onLoginSuccess()
-    }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -36,41 +32,29 @@ fun LoginScreen(
     ) {
         Text("Login", style = MaterialTheme.typography.headlineMedium)
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
+        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
+        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") })
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = {
-                if (email.isNotBlank() && password.isNotBlank()) {
-                    authViewModel.loginUser(email, password)
+        Button(onClick = {
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) navController.navigate("home")
+                    else Toast.makeText(context, "Login failed", Toast.LENGTH_SHORT).show()
                 }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        }) {
             Text("Login")
         }
 
-        errorMessage?.let {
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(text = it, color = MaterialTheme.colorScheme.error)
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextButton(onClick = {
+            navController.navigate("register") {
+                popUpTo("login") { inclusive = true }
+            }
+        }) {
+            Text("Don't have an account? Register")
         }
     }
 }

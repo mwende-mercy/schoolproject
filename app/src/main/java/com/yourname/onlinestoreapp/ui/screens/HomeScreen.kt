@@ -10,7 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.yourname.onlinestoreapp.model.Product
+import com.yourname.onlinestoreapp.navigation.Routes
+import com.yourname.onlinestoreapp.ui.components.BottomBar
 import com.yourname.onlinestoreapp.viewmodel.CartViewModel
 import com.yourname.onlinestoreapp.viewmodel.ProductViewModel
 
@@ -75,6 +80,24 @@ fun ProductItem(product: Product, cartViewModel: CartViewModel) {
             ) {
                 Text("Add to Cart")
             }
+        }
+    }
+}
+@Composable
+fun MainScreen(navController: NavHostController) {
+    Scaffold(
+        bottomBar = {
+            BottomBar(navController = navController)
+        }
+    ) { padding ->
+        NavHost(
+            navController = navController,
+            startDestination = Routes.HOME,
+            modifier = Modifier.padding(padding)
+        ) {
+            composable(Routes.HOME) { HomeScreen() }
+            composable(Routes.CART) { CartScreen() }
+            composable(Routes.PROFILE) { ProfileScreen(navController) }
         }
     }
 }
