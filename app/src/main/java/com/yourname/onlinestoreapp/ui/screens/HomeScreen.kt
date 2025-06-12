@@ -166,6 +166,7 @@ fun MainScreen(navController: NavHostController) {
 //                onRegisterSuccess = { navController.navigate(Routes.HOME) }
 
             }
+            composable(Routes.FORGOT_PASSWORD) { ForgotPasswordScreen(navController) }
             composable(Routes.HOME) { HomeScreen() }
             composable(Routes.CART) { CartScreen() }
             composable(Routes.PROFILE) { ProfileScreen(navController) }

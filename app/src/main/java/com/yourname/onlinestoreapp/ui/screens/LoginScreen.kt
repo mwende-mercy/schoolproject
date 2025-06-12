@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.yourname.onlinestoreapp.navigation.Routes
 import com.yourname.onlinestoreapp.viewmodel.AuthViewModel
+import java.nio.file.WatchEvent
 
 @Composable
 fun LoginScreen(navController: NavController, onLoginSuccess: () -> Unit = { navController.navigate(Routes.HOME)}) {
@@ -26,16 +27,33 @@ fun LoginScreen(navController: NavController, onLoginSuccess: () -> Unit = { nav
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Login", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = "Welcome Back 👋",
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.primary
+        )
 
-        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth())
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "Please login to your account",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, singleLine = true, modifier = Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.medium)
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, visualTransformation = PasswordVisualTransformation(), singleLine = true, modifier = Modifier.fillMaxWidth(),shape = MaterialTheme.shapes.medium)
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(onClick = {
             FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
@@ -43,18 +61,36 @@ fun LoginScreen(navController: NavController, onLoginSuccess: () -> Unit = { nav
                     if (it.isSuccessful) navController.navigate("home")
                     else Toast.makeText(context, "Login failed", Toast.LENGTH_SHORT).show()
                 }
-        }) {
+        },
+            modifier = Modifier.fillMaxWidth()
+                .height(50.dp),
+            shape = MaterialTheme.shapes.medium
+            )
+        {
             Text("Login")
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+        TextButton(onClick = {
+            navController.navigate(Routes.FORGOT_PASSWORD)
+        }
+        )
+        {
+            Text("Forgot Password")
+        }
+
 
         TextButton(onClick = {
             navController.navigate("register") {
                 popUpTo("login") { inclusive = true }
             }
-        }) {
+        }
+        )
+        {
             Text("Don't have an account? Register")
         }
-    }
+
+
+        }
+
 }

@@ -17,8 +17,9 @@ import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.yourname.onlinestoreapp.navigation.Routes
 import com.yourname.onlinestoreapp.viewmodel.AuthViewModel
+import java.nio.file.WatchEvent
 
-@SuppressLint("SuspiciousIndentation")
+
 @Composable
 fun RegisterScreen(navController: NavController, onRegisterSuccess: () -> Unit = { navController.navigate(Routes.HOME) }) {
     var username by remember { mutableStateOf("") }
@@ -29,18 +30,35 @@ fun RegisterScreen(navController: NavController, onRegisterSuccess: () -> Unit =
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Register", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = "Create Account 📝",
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.primary
+        )
 
-        OutlinedTextField(value = username, onValueChange = {username = it }, label = {Text("Username")}, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth())
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Sign up to get started",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(modifier = Modifier.height(32.dp))
 
+        OutlinedTextField(value = username, onValueChange = {username = it }, label = {Text("Username")}, singleLine = true, shape = MaterialTheme.shapes.medium, modifier = Modifier.fillMaxWidth())
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth(), singleLine = true, shape = MaterialTheme.shapes.medium)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth(),singleLine = true, shape = MaterialTheme.shapes.medium)
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(onClick = {if (email.isBlank() || password.length < 6) {
             Toast.makeText(context, "Please enter a valid email and a password with at least 6 characters",
@@ -56,21 +74,14 @@ fun RegisterScreen(navController: NavController, onRegisterSuccess: () -> Unit =
                     Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                 }
                 }
-        }
+        },
+            modifier = Modifier.fillMaxWidth()
+                .height(50.dp),
+            shape = MaterialTheme.shapes.medium
         )
         {
             Text("Register")
         }
-
-//        Button(onClick = {
-//            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-//                .addOnCompleteListener {
-//                    if (it.isSuccessful) navController.navigate("home")
-//                    else Toast.makeText(context, "Registration failed", Toast.LENGTH_SHORT).show()
-//                }
-//        }) {
-//            Text("Register")
-//        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
