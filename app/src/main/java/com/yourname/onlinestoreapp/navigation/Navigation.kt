@@ -29,6 +29,7 @@ fun AppNavigation(navController: NavHostController) {
             AddProductScreen(
                 onProductAdded = {
                     // Go back or to home
+                    navController.popBackStack()
                 }
             )
         }

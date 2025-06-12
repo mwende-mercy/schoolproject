@@ -15,6 +15,7 @@ import com.yourname.onlinestoreapp.navigation.AppNavigation
 import com.yourname.onlinestoreapp.navigation.Routes
 import com.yourname.onlinestoreapp.ui.screens.HomeScreen
 import com.yourname.onlinestoreapp.ui.screens.LoginScreen
+import com.yourname.onlinestoreapp.ui.screens.MainScreen
 import com.yourname.onlinestoreapp.ui.theme.OnlineStoreAppTheme
 
 
@@ -28,8 +29,8 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val user = FirebaseAuth.getInstance().currentUser
 
-                    AppNavigation(navController)
-
+//                    AppNavigation(navController)
+                    MainScreen( navController)
 //                    if (user != null) {
 //                        // ✅ Show the HomeScreen with Bottom Navigation
 //                        HomeScreen()

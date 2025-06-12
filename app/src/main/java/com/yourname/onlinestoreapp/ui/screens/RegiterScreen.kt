@@ -21,6 +21,7 @@ import com.yourname.onlinestoreapp.viewmodel.AuthViewModel
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun RegisterScreen(navController: NavController, onRegisterSuccess: () -> Unit = { navController.navigate(Routes.HOME) }) {
+    var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -34,6 +35,7 @@ fun RegisterScreen(navController: NavController, onRegisterSuccess: () -> Unit =
     ) {
         Text("Register", style = MaterialTheme.typography.headlineMedium)
 
+        OutlinedTextField(value = username, onValueChange = {username = it }, label = {Text("Username")}, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth())
 
