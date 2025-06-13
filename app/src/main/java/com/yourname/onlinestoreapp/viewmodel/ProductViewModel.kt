@@ -2,6 +2,7 @@ package com.yourname.onlinestoreapp.viewmodel
 
 //package com.yourname.onlinestore.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yourname.onlinestoreapp.model.Product
@@ -10,6 +11,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 
 
@@ -44,7 +46,7 @@ class ProductViewModel : ViewModel() {
             }
     }
 
-    fun addProduct(name: String, description: String, price: Double, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun addProduct(name: String, description: String, price: Double,imageUrl: String? = null, onSuccess: () -> Unit, onError: (String) -> Unit) {
         val id = UUID.randomUUID().toString()
         val product = Product(id, name, description, price)
 
@@ -52,5 +54,35 @@ class ProductViewModel : ViewModel() {
             .set(product)
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { onError(it.message ?: "Unknown error") }
+    }
+
+    fun uploadProductImageAndAddProduct(
+        name: String,
+        description: String,
+        price: Double,
+        imageUri: Uri,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val storageRef = FirebaseStorage.getInstance().reference
+        val imageRef = storageRef.child("product_images/${UUID.randomUUID()}.jpg")
+
+        imageRef.putFile(imageUri)
+            .addOnSuccessListener {
+                imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
+                    // Call your product creation method with image URL
+                    addProduct(
+                        name = name,
+                        description = description,
+                        price = price,
+                        imageUrl = downloadUrl.toString(),
+                        onSuccess = onSuccess,
+                        onError = onError
+                    )
+                }
+            }
+            .addOnFailureListener {
+                onError("Image upload failed: ${it.message}")
+            }
     }
 }

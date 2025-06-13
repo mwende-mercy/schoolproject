@@ -7,5 +7,5 @@ data class Product(
     val name: String = "",
     val description: String = "",
     val price: Double = 0.0,
-    val imageUrl: String = "" // You can leave this empty for now
+    val imageUrl: String? = null // You can leave this empty for now
 )
