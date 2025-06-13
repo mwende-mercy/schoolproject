@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import coil.compose.rememberAsyncImagePainter
 import com.yourname.onlinestoreapp.model.Product
 import com.yourname.onlinestoreapp.navigation.Routes
 import com.yourname.onlinestoreapp.ui.components.BottomBar
@@ -101,6 +102,18 @@ fun ProductItem(product: Product, cartViewModel: CartViewModel) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
+            // Show image if available
+            if (!product.imageUrl.isNullOrEmpty()) {
+                androidx.compose.foundation.Image(
+                    painter = rememberAsyncImagePainter(product.imageUrl),
+                    contentDescription = product.name,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
             Text(product.name, style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(4.dp))
 
@@ -125,6 +138,8 @@ fun ProductItem(product: Product, cartViewModel: CartViewModel) {
 fun MainScreen(navController: NavHostController) {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
+    val cartViewModel: CartViewModel = viewModel()
+    val productViewModel: ProductViewModel = viewModel()
 
     Scaffold(
         floatingActionButton = {
@@ -167,8 +182,16 @@ fun MainScreen(navController: NavHostController) {
 
             }
             composable(Routes.FORGOT_PASSWORD) { ForgotPasswordScreen(navController) }
-            composable(Routes.HOME) { HomeScreen() }
-            composable(Routes.CART) { CartScreen() }
+            composable(Routes.HOME) {
+                HomeScreen(productViewModel = productViewModel, cartViewModel = cartViewModel)
+//                val productViewModel: ProductViewModel = viewModel()
+//                LaunchedEffect(Unit) {
+//                    productViewModel.fetchProducts()
+//                }
+//                HomeScreen(productViewModel)
+            }
+//            composable(Routes.HOME) { HomeScreen() }
+            composable(Routes.CART) { CartScreen(cartViewModel = cartViewModel) }
             composable(Routes.PROFILE) { ProfileScreen(navController) }
         }
     }

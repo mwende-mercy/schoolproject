@@ -120,6 +120,7 @@ fun AddProductScreen(
     viewModel: ProductViewModel = viewModel()
 ) {
     val context = LocalContext.current
+//    val imageUri = remember { mutableStateOf<Uri?>(null) }
     var name by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
