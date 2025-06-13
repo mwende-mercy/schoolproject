@@ -35,6 +35,9 @@ fun CartScreen(cartViewModel: CartViewModel = viewModel()) {
                             Text(item.product.name, style = MaterialTheme.typography.titleMedium)
                             Text("Quantity: ${item.quantity}")
                             Text("Price: Ksh ${item.product.price * item.quantity}")
+                            Button(onClick = {cartViewModel.removeFromCart(item.product.id)}) {
+                                Text("Remove from cart")
+                            }
                         }
                     }
                 }
